@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New user</title>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/admin/new}" th:object="${user}">
+    <input type="hidden" th:field="*{id}" value="${user.id}"/>
+    <input type="hidden" th:field="*{id}" value="${role.id}"/>
+
+    <label for="lastName">Enter name:</label>
+    <input type="text" th:field="*{name}" id="name"/>
+    <br/>
+    <label for="lastName">Enter lastName:</label>
+    <input type="text" th:field="*{lastName}" id="lastName"/>
+    <br/>
+    <label for="age">Enter age:</label>
+    <input type="number" th:field="*{age}" id="age"/>
+    <br/>
+    <label for="username">Enter username:</label>
+    <input type="text" th:field="*{username}" id="username"/>
+    <br/>
+    <label for="password">Enter password:</label>
+    <input type="text" th:field="*{password}" id="password"/>
+    <br/>
+    <label th:text="Roles"></label><br/>
+<!--        <select th:field="*{roles}" multiple="multiple">-->
+        <select id="allRoles" name="allRoles" multiple="multiple">
+            <option th:each="role : ${allRoles}"
+                    th:value="${role.role}"
+                    th:text="${role.role}">
+            </option>
+        </select>
+<!--        <label>Roles:-->
+<!--            <input type="checkbox" name="allRoles"-->
+<!--                   th:each="role : ${allRoles}"-->
+<!--                   th:text="${role.role}"-->
+<!--                   th:value="${role.role}"-->
+<!--            />-->
+<!--        </label>-->
+        <br/>
+
+    <input type="submit" value = "Add"/>
+
+</form>
+<div>
+    <form sec:authorize="isAuthenticated()" th:method="POST" th:action="@{/logout}">
+        <a th:href="@{/logout}"></a>
+        <button type="submit" >Logout</button>
+    </form>
+</div>
+</body>
+</html>
