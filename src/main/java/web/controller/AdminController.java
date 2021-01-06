@@ -64,15 +64,15 @@ public class AdminController {
         return "redirect:/admin";
     }
     // редактирования пользователя
-    @GetMapping("/admin/{id}/edit")
-    public String edit(Model model, @PathVariable("id") long id) {
-        model.addAttribute("user", userService.getById(id));
+    @GetMapping("/admin/edit")
+    public String edit(Model model, @RequestParam(value = "userid", required = true) long userid) {
+        model.addAttribute("user", userService.getById(userid));
         //model.addAttribute("allRoles",  new ArrayList<>(userService.show(id).getRoles()));
         model.addAttribute("allRoles", roleService.allRoles());
         return "admin/edit";
     }
     // сохранение редактирования пользователя
-    @PostMapping("/admin/{id}/edit")
+    @PostMapping("/admin/edit")
     public String update(@ModelAttribute("user") User user,
                          @RequestParam(value = "allRoles") String[] roles) {
         //System.out.println(user);
