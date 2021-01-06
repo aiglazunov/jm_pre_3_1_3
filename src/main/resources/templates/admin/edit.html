@@ -29,7 +29,8 @@
     <select id="allRoles" name="allRoles" multiple="multiple">
         <option th:each="role : ${allRoles}"
                 th:value="${role.role}"
-                th:text="${role.role}">
+                th:text="${role.role}"
+                th:selected="${user.getRoles().contains(role)}">
         </option>
     </select>
 <!--    <input type="text" th:field="*{roles}" id="role"/>-->
