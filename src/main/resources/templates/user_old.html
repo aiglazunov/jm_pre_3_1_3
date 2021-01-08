@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<!--      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+</head>
+<body>
+<h1>Hi, User!</h1>
+
+<br>
+Your Login:
+<span th:utext="${username}"></span>
+<br>
+Your Role (Roles):
+<span th:text="${roleSet}"></span>
+<br><br>
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    <a href="/admin">Users</a>
+</div>
+<div sec:authorize="hasAuthority('ADMIN')"> Has Authority ADMIN</div>
+<div sec:authorize="hasAuthority('USER')"> Has Authority USER</div>
+<div sec:authorize="hasAuthority('ROLE_ADMIN')"> Has Authority ROLE_ADMIN</div>
+<div sec:authorize="hasAuthority('ROLE_USER')"> Has Authority ROLE_USER</div>
+<div sec:authorize="hasRole('ROLE_ADMIN')">Has Role ROLE_ADMIN</div>
+<div sec:authorize="hasRole('ROLE_USER')">Has Role ROLE_USER</div>
+<div sec:authorize="hasRole('ADMIN')">Has Role ADMIN</div>
+<div sec:authorize="hasRole('USER')">Has Role USER</div>
+<br/>
+Authenticated username:
+<div sec:authentication="name"></div>
+Authenticated user roles:
+<div sec:authentication="principal.authorities"></div>
+Authorize:
+<div sec:authorize="isAuthenticated()"></div>
+<br/>
+<div>
+    <form sec:authorize="isAuthenticated()" th:method="POST" th:action="@{/logout}">
+        <a th:href="@{/logout}"></a>
+        <button type="submit">Logout</button>
+    </form>
+</div>
+</body>
+</html>

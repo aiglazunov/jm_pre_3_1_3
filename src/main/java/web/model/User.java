@@ -57,7 +57,9 @@ public class User implements UserDetails {
         return roles
                 .stream()
                 .map(Role::getRole)
-                .collect(Collectors.joining(", "));
+                .map(s -> s.replaceAll("ROLE_", ""))
+                .sorted()
+                .collect(Collectors.joining(" "));
     }
 
 

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:th="http://www.w3.org/1999/xhtml"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title></title>
+
+</head>
+<body class="bg-light" th:with="page=${'admin'}">
+
+<div th:replace="~{utils :: header}"></div>
+
+<div>
+    <div class="col-2 h-100 mt-n2 ml-n3 mb-0 pr-5 position-absolute">
+        <ul class="list-group bg-white h-100 mt-0">
+            <li
+                    class="list-group-item border-0"
+                    th:classappend="${#strings.equals(page, 'user')} ? 'active' : ''"
+                    sec:authorize="hasAnyAuthority('ADMIN', 'USER')"
+            >
+                <div th:switch="${page}">
+                    <div th:case="'user'">User</div>
+                    <a th:case="*" th:href="@{/user}">User</a>
+                </div>
+            </li>
+            <li
+                    class="list-group-item border-0"
+                    sec:authorize="hasAuthority('ADMIN')"
+                    th:classappend="${#strings.equals(page, 'admin')} ? 'active' : ''"
+            >
+                <div th:switch="${page}">
+                    <div th:case="'admin'">Admin</div>
+                    <a th:case="*" th:href="@{/admin}">Admin</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="col-10 mt-3 ml-auto mr-5 float-right">
+        <h1 class="text-left">
+            User information page
+        </h1>
+        <ul class="nav nav-tabs card-header-tabs m-0 row">
+            <li class="nav-item">
+                <a class="nav-link active" href="#user_list" data-toggle="tab">Users table</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#new_user" data-toggle="tab">New User</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="row card m-0 tab-pane active" id="user_list">
+                <div class="card-header">About user</div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Roles</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="user: ${users}">
+                            <td class="align-middle" th:text="${user.id}">1</td>
+                            <td class="align-middle" th:text="${user.username}">admin</td>
+                            <td class="align-middle" th:text="${user.name}">Ivanov</td>
+                            <td class="align-middle" th:text="${user.lastName}">24</td>
+                            <td class="align-middle">
+                                <div th:each="role: ${user.getAuthorities()}" th:text="${role.getAuthority()}">
+                                </div>
+                            </td>
+                            <td><button type="button" class="btn btn-info edit-btn" data-toggle="modal" data-target="#editModal">Edit</button></td>
+                            <td><button type="button" class="btn btn-danger delete-btn" data-toggle="modal" data-target="#editModal">Delete</button></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row card m-0 tab-pane fade" id="new_user">
+                <div class="card-header h4 font-weight-normal">Add new user</div>
+                <div class="card-body">
+                    <form class="add-form" action="/admin/add" method="post">
+                        <div class="form-group d-flex flex-column col-4 m-auto align-items-center">
+                            <label for="n_username" class="form-check-label h5 font-weight-bold">Username</label>
+                            <input type="text" class="form-control mb-3" id="n_username" name="username">
+                            <label for="n_lastName" class="form-check-label h5 font-weight-bold">Password</label>
+                            <input type="password" class="form-control mb-3" id="n_password" name="password">
+                            <label for="n_name" class="form-check-label h5 font-weight-bold">First name</label>
+                            <input type="text" class="form-control mb-3" id="n_name" name="name">
+                            <label for="n_lastName" class="form-check-label h5 font-weight-bold">Last name</label>
+                            <input type="text" class="form-control mb-3" id="n_lastName" name="lastName">
+                            <label for="n_roles" class="form-check-label h5 font-weight-bold">Roles</label>
+                            <select class="form-control mb-3" multiple name="role" id="n_roles" size="2">
+                                <option value="USER">USER</option>
+                                <option value="ADMIN">ADMIN</option>
+                            </select>
+                            <input type="submit" class="btn btn-success btn-lg submit p-2 pl-4 pr-4" value="Add new user" name="submit"><br>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--MODAL EDIT-->
+<div class="modal fade" id="editModal" tabindex="-1" role="form" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit user</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post"  class="edit-form">
+                <div class="modal-body form-group text-center">
+                    <label for="name">Id: </label>
+                    <input type="text" class="form-control" id="id" name="id"><br>
+                    <label for="name">Username: </label>
+                    <input type="text" class="form-control" id="username" name="username"><br>
+                    <label for="name">Password: </label>
+                    <input type="text" class="form-control" id="password" name="password"><br>
+                    <label for="name">First name: </label>
+                    <input type="text" class="form-control" id="name" name="name"><br>
+                    <label for="last_name">Last name: </label>
+                    <input type="text" class="form-control" id="last_name" name="lastName"><br>
+                    <select class="form-control mb-3" multiple name="role" id="roles" size="2">
+                        <option value="USER">USER</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                </div>
+                <div class="modal-footer form-group">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">Close</span>
+                    </button>
+                    <input type="submit" class="btn btn-primary submit" value="Edit" name="submit"><br>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/js/custom/main.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="/js/bootstrap.js"></script>
+</body>
+</html>

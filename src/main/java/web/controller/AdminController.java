@@ -12,6 +12,7 @@ import web.model.User;
 import web.service.RoleService;
 import web.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,8 +35,10 @@ public class AdminController {
 
     //список всех пользователей с ссылками
     @GetMapping("/admin")
-    public String index(ModelMap model) {
+    public String index(ModelMap model, Principal principal) {
         model.addAttribute("users", userService.allUsers());
+        model.addAttribute("user", userService.getByName(principal.getName()));
+        model.addAttribute("allRoles", roleService.allRoles());
         //System.out.println(userService.allUsers());
         //Получим всех людей из DAO и передадим на отображение в представление
         return "admin/index";
@@ -46,6 +49,26 @@ public class AdminController {
         model.addAttribute("user", new User());
         model.addAttribute("allRoles", roleService.allRoles());
         return "admin/new";
+    }
+    @PostMapping("/admin/new2")
+    public String create2(HttpServletRequest request) {
+        User user = new User();
+
+        user.setUsername(request.getParameter("username").trim());
+        user.setPassword(request.getParameter("password").trim());
+        user.setName(request.getParameter("name").trim());
+        user.setLastName(request.getParameter("lastname").trim());
+        user.setAge(Byte.valueOf(request.getParameter("age").trim()));
+        String[] roles = request.getParameterValues("allRoles");
+        Set<Role> roleSet = new HashSet<>();
+        for (String role : roles) {
+            //System.out.println(role);
+            roleSet.add(roleService.findRoleByName(role));
+        }
+        user.setRoles(roleSet);
+        userService.add(user);
+
+        return "redirect:/admin";
     }
     // сохранение нового пользователя
     @PostMapping("/admin/new")
@@ -88,9 +111,20 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+
     @GetMapping("admin/{id}/delete")
     public String delete(@PathVariable("id") long id) {
         User user = userService.getById(id);
+        userService.delete(user);
+        return "redirect:/admin";
+    }
+
+
+    // удаление пользователя
+    @PostMapping("/admin/delete")
+    public String delete2(@ModelAttribute("user") User user) {
+
+        //model.addAttribute("allRoles",  new ArrayList<>(userService.show(id).getRoles()));
         userService.delete(user);
         return "redirect:/admin";
     }
@@ -102,12 +136,15 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
 
-        Set<String> roles = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+        Set<String> roles = authentication
+                .getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
 
         StringBuilder sb = new StringBuilder();
         for (String role : roles) {
-            sb.append(role).append(" ");
+            sb.append(role.replaceAll("ROLE_", "")).append(" ");
         }
 
 
@@ -132,7 +169,7 @@ public class AdminController {
             sb.append(role).append(" ");
         }
 
-
+        modelMap.addAttribute("user", userService.getByName(principal.getName()));
         modelMap.addAttribute("username", principal.getName());
         modelMap.addAttribute("roleSet", new String(sb));
 

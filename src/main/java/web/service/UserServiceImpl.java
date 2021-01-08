@@ -38,4 +38,11 @@ public class UserServiceImpl implements UserService {
     public User getById(long id) {
         return userRepository.getOne(id);
     }
+
+    @Override
+    public User getByName(String name) {
+        return userRepository.getUserByUsername(name);
+    }
+
+
 }

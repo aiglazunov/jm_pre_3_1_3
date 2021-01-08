@@ -1,42 +1,164 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en"
+      xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Users</title>
 </head>
-<body>
-<table border="1">
-    <tr>
-<!--        <th>id</th>-->
-        <th>name</th>
-        <th>lastname</th>
-        <th>age</th>
-        <th>username</th>
-        <th>password</th>
-        <th>roles</th>
-        <th>edit</th>
-        <th>delete</th>
-    </tr>
-    <tr th:each="user : ${users}">
-        <td th:type="hidden" th:utext="${user.getId()}" hidden="true">id</td>
-        <td th:utext="${user.getName()}">name</td>
-        <td th:utext="${user.getLastName()}">lastname</td>
-        <td th:utext="${user.getAge()}">age</td>
-        <td th:utext="${user.username}">username</td>
-        <td th:utext="${user.password}">password</td>
-        <td th:utext="${user.getRoles()}">roles</td>
-        <td><a th:href="@{/admin/edit?userid={id}(id=${user.getId()})}">Edit</a></td>
-        <td><a th:href="@{/admin/{id}/delete(id=${user.getId()})}">Delete</a></td>
-    </tr>
-</table>
-<p><a href="/admin/new">Add</a></p>
-<div>
-    <form sec:authorize="isAuthenticated()" th:method="POST" th:action="@{/logout}">
-        <a th:href="@{/logout}"></a>
-        <button type="submit" >Logout</button>
-    </form>
+<body class="bg-light">
+
+<div th:replace="util :: header"></div>
+
+<div class="container-fluid hidden-md-down bg-light" >
+    <div class="row justify-content-center">
+        <div class="col-md-2 hidden-md-down bg-white p-0">
+
+            <ul class="nav flex-column nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/admin">Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link " href="/user">User</a>
+                </li>
+            </ul>
+
+        </div>
+        <div class="col-md-10 bg-white">
+
+            <h3>Admin panel</h3>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Users table</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">New User</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+                    <div th:replace="util :: users-table"></div>
+
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+                    <div th:replace="util :: new-user   "></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!--MODAL EDIT-->
+<div class="modal fade" id="editModal"  th:attrappend="id=${user.getId()}" tabindex="-1" role="form" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit user</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+                <form class="edit-form" id="editModalForm" method="post" action="/admin/edit_test">
+                <div class="modal-body form-group text-center">
+                    <label for="id">Id: </label>
+                    <input type="text" class="form-control" id="id" name="id" disabled="true"><br>
+                    <label for="name">First name</label>
+                    <input type="text" class="form-control" id="name" name="name"><br>
+                    <label for="lastname">Last name</label>
+                    <input type="text" class="form-control" id="lastname" name="lastname"><br>
+                    <label for="age">Age</label>
+                    <input type="number" class="form-control" id="age" name="age"><br>
+                    <label for="username">Username: </label>
+                    <input type="text" class="form-control" id="username" name="username"><br>
+                    <label for="password">Password: </label>
+                    <input type="text" class="form-control" id="password" name="password"><br>
+                    <select class="form-control mb-3" multiple name="role" id="roles" size="2">
+                        <option value="USER">USER</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                </div>
+                <div class="modal-footer form-group">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">Close</span>
+                    </button>
+                    <input type="submit" class="btn btn-primary submit" value="Edit" name="submit"><br>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--DELETE EDIT-->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="form" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="form">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete user</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form class="delete-form" method="post" action="/admin/edit_test">
+                <div class="modal-body form-group text-center">
+                    <label for="id_delete">Id: </label>
+                    <input type="text" class="form-control" id="id_delete" name="id" disabled="true"><br>
+                    <label for="name_delete">First name</label>
+                    <input type="text" class="form-control" id="name_delete" name="name" disabled="true"><br>
+                    <label for="lastname_delete">Last name</label>
+                    <input type="text" class="form-control" id="lastname_delete" name="lastname" disabled="true"><br>
+                    <label for="age_delete">Age</label>
+                    <input type="number" class="form-control" id="age_delete" name="age" disabled="true"><br>
+                    <label for="username_delete">Username: </label>
+                    <input type="text" class="form-control" id="username_delete" name="username" disabled="true"><br>
+
+                    <select class="form-control mb-3" multiple name="role" id="roles_delete" size="2" disabled="true">
+                        <option value="USER">USER</option>
+                        <option value="ADMIN">ADMIN</option>
+                    </select>
+                </div>
+                <div class="modal-footer form-group">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">Close</span>
+                    </button>
+                    <input type="submit" class="btn btn-danger submit" value="Delete" name="submit"><br>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--<script type="text/javascript">-->
+<!--    window.onload = async function () {-->
+<!--        let editButton  = document.getElementsByClassName("edit-btn");-->
+<!--        Array.from(editButton).forEach(el => el.addEventListener("click", function (e) {-->
+<!--            //console.log(e.target.getAttribute('user-id'));-->
+<!--            var userid = e.target.getAttribute('user-id');-->
+<!--            $('#editModal').modal();-->
+<!--            $('#editModalForm [name=id]').val(userid);-->
+<!--        }, false))-->
+<!--        //console.log(editButton);-->
+
+<!--    }-->
+<!--</script>-->
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
 </body>
 </html>
