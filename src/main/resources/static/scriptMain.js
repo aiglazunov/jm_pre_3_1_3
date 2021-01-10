@@ -80,9 +80,24 @@ $("#editModal").on('show.bs.modal', (e) => {
                 //.text(role.role).val(role.id)
             )
         });
+        var userRoles = user.roles;
+        //console.log(userRoles);
+        var result = new Map(userRoles.map(i => [i.id, i.role]));
+        var selRoles = Array.from(result.values());
+
+        $.each(user.roles, (i, role) => {
+            if (selRoles.includes("ROLE_USER")) {
+                $('#roles_edit option[value=2]').prop('selected', true);
+            }
+            if (selRoles.includes("ROLE_ADMIN")) {
+                $('#roles_edit option[value=1]').prop('selected', true);
+            }
+
+        });
 
         $("#buttonEditSubmit").on('click', (e) => {
             e.preventDefault();
+
 
             let editUser = {
                 id: $("#id_edit").val(),
@@ -90,21 +105,27 @@ $("#editModal").on('show.bs.modal', (e) => {
                 lastName: $("#lastname_edit").val(),
                 password: $("#password_edit").val(),
                 username: $("#username_edit").val(),
-                age: $("#age_edit").val()
+                age: $("#age_edit").val(),
+                //roles: $("#roles_edit").empty()
                 //roles: $("#roles_edit")
             }
             //console.log(editUser);
 
             editUser['roles'] = [];
+            let temp = [];
 
             $("#roles_edit option").each(function () {
                 if (this.selected) {
                     //console.log(this)
-                    editUser['roles'].push({id: this.value, role: this.text})
+                    temp.push({id: this.value, role: this.text})
+                    //editUser['roles'].push({id: this.value, role: this.text})
                 }
             })
 
-            //console.log(editUser);
+//            console.log(temp);
+            editUser['roles'] = temp;
+            console.log(editUser);
+
 
             $.ajax({
                 url: "api/users/",
@@ -116,6 +137,10 @@ $("#editModal").on('show.bs.modal', (e) => {
                 $("#editModal").modal('hide');
                 getAllUsers();
             })
+
+
+
+
 
 
         })

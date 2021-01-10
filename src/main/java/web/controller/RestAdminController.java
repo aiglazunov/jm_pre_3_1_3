@@ -57,7 +57,7 @@ public class RestAdminController {
     // edit user
     @PutMapping()
     public ResponseEntity<User> editUser(@RequestBody User user) {
-
+        System.out.println(user);
         userService.update(user);
         return new ResponseEntity<>(userService.getByName(user.getUsername()), HttpStatus.OK);
     }
