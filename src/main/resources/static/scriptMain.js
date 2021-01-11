@@ -138,9 +138,7 @@ $("#editModal").on('show.bs.modal', (e) => {
                 getAllUsers();
             })
 
-
-
-
+            $(this).unbind(e);
 
 
         })
@@ -180,7 +178,7 @@ $("#deleteModal").on('show.bs.modal', (e) => {
             )
         });
 
-        $("#buttonDeleteSubmit").on('click', (e) => {
+            $("#buttonDeleteSubmit").on('click', (e) => {
             e.preventDefault();
 
             let editUser = {
@@ -257,7 +255,7 @@ $("#buttonNewSubmit").on('click', (e) => {
     }).done((msgSave) => {
         getAllUsers();
         $('#mainTab a[href="#home"]').tab('show');
-        $('#mainNav a[href="/user"]').tab('show');
+        //$('#mainNav a[href="/user"]').tab('show');
     })
 
 
