@@ -37,7 +37,7 @@ public class AdminController {
     @GetMapping("/admin")
     public String index(ModelMap model, Principal principal) {
         model.addAttribute("users", userService.allUsers());
-        model.addAttribute("user", userService.getByName(principal.getName()));
+        //model.addAttribute("user", userService.getByName(principal.getName()));
         model.addAttribute("allRoles", roleService.allRoles());
         //System.out.println(userService.allUsers());
         //Получим всех людей из DAO и передадим на отображение в представление

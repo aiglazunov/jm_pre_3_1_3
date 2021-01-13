@@ -51,6 +51,7 @@ public class RestAdminController {
     // create user
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user){
+
         userService.add(user);
         return  new ResponseEntity<>(userService.getByName(user.getUsername()), HttpStatus.OK);
     }

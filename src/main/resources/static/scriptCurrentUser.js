@@ -7,7 +7,7 @@ function getCurrent() {
         dataType: "json"
     }).done((msg) => {
         let user = JSON.parse(JSON.stringify(msg));
-        //console.log(user);
+        console.log(user);
         let rolesStr = new Array();
         $.each(user.roles, (i, role) =>{
             rolesStr.push(role.role.replace('ROLE_',''));

@@ -21,8 +21,8 @@
             with roles:
             <div class="navbar-nav justify-content-center ml-2">
                 <ul class="list-inline mb-0">
-<!--                    <li class="list-inline-item" th:each="authority : ${#authentication.getAuthorities()}" th:text="${authority.getAuthority()}"></li>-->
-                    <li class="list-inline-item" th:text="${user.getRoleName()}"></li>
+                    <li class="list-inline-item" th:each="authority : ${#authentication.getAuthorities()}" th:text="${authority.getAuthority()}"></li>
+<!--                    <li class="list-inline-item" th:text="${user.getRoleName()}"></li>-->
                 </ul>
             </div>
         </div>
