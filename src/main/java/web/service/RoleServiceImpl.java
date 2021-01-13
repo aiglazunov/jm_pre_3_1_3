@@ -5,8 +5,9 @@ import web.model.Role;
 import web.repository.RoleRepository;
 
 import java.util.List;
+
 @Service
-public class RoleServiceImpl implements  RoleService{
+public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
 

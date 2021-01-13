@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
-@Table (name = "users")
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,8 +34,8 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "users_roles",
-              joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-             inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
 
     private Set<Role> roles;
 
@@ -47,7 +47,6 @@ public class User implements UserDetails {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-
 
 
     public User() {
@@ -96,6 +95,7 @@ public class User implements UserDetails {
     public void setAge(Byte age) {
         this.age = age;
     }
+
     @Override
     public String getUsername() {
         return username;
@@ -148,7 +148,7 @@ public class User implements UserDetails {
         return "User" + " [id: " + id
                 + ", name: " + name
                 + ", lastname: " + lastName
-                + ", roles: " +getRoleName()
+                + ", roles: " + getRoleName()
                 + ", age: " + age + "]";
     }
 }

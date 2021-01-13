@@ -8,6 +8,6 @@ public interface RoleService {
 
     List<Role> allRoles(); //listRoles
 
-    Role findRoleByName (String role);
+    Role findRoleByName(String role);
 
 }

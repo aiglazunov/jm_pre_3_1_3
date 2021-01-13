@@ -255,8 +255,11 @@ $("#buttonNewSubmit").on('click', (e) => {
     }).done((msgSave) => {
         getAllUsers();
         $('#mainTab a[href="#home"]').tab('show');
+
         //$('#mainNav a[href="/user"]').tab('show');
     })
+
+
 
 
 })

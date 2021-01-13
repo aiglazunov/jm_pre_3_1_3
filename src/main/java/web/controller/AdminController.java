@@ -33,32 +33,24 @@ public class AdminController {
         return "login";
     }
 
-    //список всех пользователей с ссылками
     @GetMapping("/admin")
     public String index(ModelMap model, Principal principal) {
         model.addAttribute("users", userService.allUsers());
-        //model.addAttribute("user", userService.getByName(principal.getName()));
         model.addAttribute("allRoles", roleService.allRoles());
-        //System.out.println(userService.allUsers());
-        //Получим всех людей из DAO и передадим на отображение в представление
         return "admin/index";
     }
 
-    // сохранение нового пользователя
     @PostMapping("/admin/new")
     public String create(@ModelAttribute("user") User user,
                          @RequestParam(value = "allRoles", required = false) String[] roles) {
 
-        //System.out.println(user);
         Set<Role> roleSet = new HashSet<>();
-        if ( roles != null) {
+        if (roles != null) {
             for (String role : roles) {
-                //System.out.println(role);
                 roleSet.add(roleService.findRoleByName(role));
             }
 
-        }
-        else {
+        } else {
             roleSet.add(roleService.findRoleByName("ROLE_USER"));
         }
         user.setRoles(roleSet);
@@ -67,28 +59,22 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    // сохранение редактирования пользователя
     @PostMapping("/admin/edit")
     public String update(@ModelAttribute("user") User user,
                          @RequestParam(value = "allRoles") String[] roles) {
-        //System.out.println(user);
         Set<Role> roleSet = new HashSet<>();
+
         for (String role : roles) {
-            //System.out.println(role);
             roleSet.add(roleService.findRoleByName(role));
         }
-
 
         user.setRoles(roleSet);
         userService.update(user);
         return "redirect:/admin";
     }
 
-    // удаление пользователя
     @PostMapping("/admin/delete")
     public String delete2(@ModelAttribute("user") User user) {
-
-        //model.addAttribute("allRoles",  new ArrayList<>(userService.show(id).getRoles()));
         userService.delete(user);
         return "redirect:/admin";
     }

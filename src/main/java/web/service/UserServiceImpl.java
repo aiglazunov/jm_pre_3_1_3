@@ -12,9 +12,10 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    public UserServiceImpl (UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @Override
     public List<User> allUsers() {
         return userRepository.findAll();
@@ -44,8 +45,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getById(long id) {
-        //return userRepository.getOne(id);
-       return userRepository.findById(id).get();
+        return userRepository.findById(id).get();
     }
 
     @Override
