@@ -29,7 +29,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void update(User user) {
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+
+        String passwordOld = userRepository.findById(user.getId()).get().getPassword();
+
+        if (user.getPassword().isEmpty()) {
+            user.setPassword(passwordOld);
+        } else {
+            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        }
         userRepository.saveAndFlush(user);
     }
 

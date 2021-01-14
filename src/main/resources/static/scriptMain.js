@@ -68,7 +68,7 @@ $("#editModal").on('show.bs.modal', (e) => {
         $("#lastname_edit").empty().val(user.lastName);
         $("#age_edit").empty().val(user.age);
         $("#username_edit").empty().val(user.username);
-        $("#password_edit").empty().val(user.password);
+        $("#password_edit").empty();//.val(user.password);
         $("#roles_edit").empty();
         //console.log(allRoles);
         $.each(allRoles, (i, role) => {
