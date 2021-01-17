@@ -33,6 +33,11 @@ public class AdminController {
         return "login";
     }
 
+    @RequestMapping("/test")
+    public String test() {
+        return "test";
+    }
+
     @GetMapping("/admin")
     public String index(ModelMap model, Principal principal) {
         model.addAttribute("users", userService.allUsers());

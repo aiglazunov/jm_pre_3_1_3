@@ -3,6 +3,8 @@ package web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import web.model.*;
 import web.service.*;
@@ -44,6 +46,9 @@ public class RestAdminController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
+        //Object credentials = authentication.getCredentials();
+
+        //String password = user.getPassword();
         return ResponseEntity.ok()
                 .body(userService.getById(id));
     }

@@ -1,5 +1,7 @@
 package web.service;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import web.model.User;
@@ -11,6 +13,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -30,14 +33,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User user) {
 
-        String passwordOld = userRepository.findById(user.getId()).get().getPassword();
+        User user_current = (User) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
 
-        if (user.getPassword().isEmpty()) {
-            user.setPassword(passwordOld);
+        User user_old = userRepository.findById(user.getId()).get();
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+        boolean isCurrentUser = user_current.getId().equals(user.getId());
+        boolean isUsersEquals = user.equals(user_old);
+
+        if (isCurrentUser) {
+            if (isCurrentUser && user_current.equals(user)) {
+                if (user.getPassword() == null || "".equals(user.getPassword())) {
+                    user.setPassword(user_current.getPassword());
+                } else {
+                    user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+                }
+                userRepository.saveAndFlush(user);
+
+            }
+
         } else {
-            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+            if (!(bCryptPasswordEncoder.matches(user.getPassword(), userRepository.getUserPassword(user.getId())) && isUsersEquals)) {
+                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+                userRepository.saveAndFlush(user);
+            }
         }
-        userRepository.saveAndFlush(user);
+
+
     }
 
     @Override
