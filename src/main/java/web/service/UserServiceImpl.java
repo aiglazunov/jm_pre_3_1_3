@@ -33,33 +33,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(User user) {
 
-        User user_current = (User) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-
-        User user_old = userRepository.findById(user.getId()).get();
-
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-        boolean isCurrentUser = user_current.getId().equals(user.getId());
-        boolean isUsersEquals = user.equals(user_old);
+        User userContext = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (isCurrentUser) {
-            if (isCurrentUser && user_current.equals(user)) {
-                if (user.getPassword() == null || "".equals(user.getPassword())) {
-                    user.setPassword(user_current.getPassword());
-                } else {
-                    user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-                }
-                userRepository.saveAndFlush(user);
-
-            }
-
-        } else {
-            if (!(bCryptPasswordEncoder.matches(user.getPassword(), userRepository.getUserPassword(user.getId())) && isUsersEquals)) {
+        //если текущий пользователь контекста == пользователю которого редактируем
+        if (userContext.getId().equals(user.getId())) {
+            // и если его пароль не менялся - берем из контекста
+            if (user.getPassword() == null || "".equals(user.getPassword())) {
+                user.setPassword(userContext.getPassword());
+                // иначе кодируем пароль
+            } else {
                 user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-                userRepository.saveAndFlush(user);
+            }
+            //если текущий пользователь контекста != пользователю которого редактируем
+        } else {
+            // и если его пароль не менялся - берем текущий из базы
+            if (user.getPassword() == null || "".equals(user.getPassword())) {
+                user.setPassword(userRepository.getUserPassword(user.getId()));
+                // иначе кодируем пароль
+            } else {
+                user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             }
         }
+
+        userRepository.saveAndFlush(user);
 
 
     }

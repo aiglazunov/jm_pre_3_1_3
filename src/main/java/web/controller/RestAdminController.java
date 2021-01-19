@@ -46,9 +46,7 @@ public class RestAdminController {
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
-        //Object credentials = authentication.getCredentials();
 
-        //String password = user.getPassword();
         return ResponseEntity.ok()
                 .body(userService.getById(id));
     }
